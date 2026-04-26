@@ -1,0 +1,74 @@
+<main class="page-shell">
+  <section class="hero-card">
+    <span class="badge">recipes-app</span>
+    <h1>Frontend Angular + API Symfony</h1>
+    <p>
+      Cette interface Angular consomme l'API Symfony exposée derrière le reverse proxy Nginx.
+    </p>
+  </section>
+
+  <section class="grid-layout">
+    <article class="panel">
+      <div class="panel-header">
+        <h2>Créer une recette</h2>
+        <p>La requête POST passe par <strong>/admin/recipes</strong>.</p>
+      </div>
+
+      <form class="recipe-form" (ngSubmit)="createRecipe()">
+        <label>
+          Titre
+          <input
+            type="text"
+            name="title"
+            [(ngModel)]="form.title"
+            placeholder="Ex: Lasagnes maison"
+            required
+          />
+        </label>
+
+        <label>
+          Description
+          <textarea
+            name="description"
+            [(ngModel)]="form.description"
+            rows="5"
+            placeholder="Décris rapidement la recette"
+            required
+          ></textarea>
+        </label>
+
+        <button type="submit" [disabled]="isSubmitting">
+          {{ isSubmitting ? 'Création en cours...' : 'Créer la recette' }}
+        </button>
+      </form>
+
+      <p class="message success" *ngIf="successMessage">{{ successMessage }}</p>
+      <p class="message error" *ngIf="errorMessage">{{ errorMessage }}</p>
+    </article>
+
+    <article class="panel">
+      <div class="panel-header">
+        <h2>Liste des recettes</h2>
+        <p>La requête GET passe par <strong>/api/recipes</strong>.</p>
+      </div>
+
+      <button class="secondary-button" type="button" (click)="loadRecipes()" [disabled]="isLoading">
+        {{ isLoading ? 'Chargement...' : 'Rafraîchir la liste' }}
+      </button>
+
+      <ul class="recipes-list" *ngIf="recipes.length > 0; else emptyState">
+        <li *ngFor="let recipe of recipes">
+          <h3>{{ recipe.title }}</h3>
+          <p>{{ recipe.description }}</p>
+          <span>Créée le {{ recipe.created_at | date: 'short' }}</span>
+        </li>
+      </ul>
+
+      <ng-template #emptyState>
+        <div class="empty-state">
+          <p>Aucune recette disponible pour le moment.</p>
+        </div>
+      </ng-template>
+    </article>
+  </section>
+</main>

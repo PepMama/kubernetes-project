@@ -15,14 +15,30 @@ spec:
     spec:
       containers:
         - name: api-public
-          image: nginx:latest
+          image: recipes-symfony:latest
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
-          volumeMounts:
-            - name: app-demo-pages
-              mountPath: /usr/share/nginx/html/index.html
-              subPath: api-public-index.html
-      volumes:
-        - name: app-demo-pages
-          configMap:
-            name: app-demo-pages
+          env:
+            - name: APP_ENV
+              value: prod
+            - name: APP_DEBUG
+              value: '0'
+            - name: APP_SECRET
+              value: recipes-app-secret
+            - name: DB_HOST
+              value: mysql-service
+            - name: DB_PORT
+              value: '3306'
+            - name: DB_NAME
+              value: recipesdb
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: MYSQL_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: MYSQL_PASSWORD
