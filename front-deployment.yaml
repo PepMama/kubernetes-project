@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front-deployment
+  namespace: recipes-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: front
+  template:
+    metadata:
+      labels:
+        app: front
+    spec:
+      containers:
+        - name: front
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: app-demo-pages
+              mountPath: /usr/share/nginx/html/index.html
+              subPath: front-index.html
+      volumes:
+        - name: app-demo-pages
+          configMap:
+            name: app-demo-pages

@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-public-deployment
+  namespace: recipes-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-public
+  template:
+    metadata:
+      labels:
+        app: api-public
+    spec:
+      containers:
+        - name: api-public
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: app-demo-pages
+              mountPath: /usr/share/nginx/html/index.html
+              subPath: api-public-index.html
+      volumes:
+        - name: app-demo-pages
+          configMap:
+            name: app-demo-pages

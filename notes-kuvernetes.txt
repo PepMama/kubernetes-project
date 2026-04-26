@@ -1,0 +1,95 @@
+KUBERNETES : PODS, service, volume
+-----------------------------
+Dans pod :
+apiVersion: v1
+kind: Pod
+metadata:
+  name: example-pod
+  labels:
+    app: example
+spec:
+  containers:
+  - name: nginx-container
+    image: nginx:latest
+    ports:
+    - containerPort: 80
+
+-----------------------------
+Dans service :
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  selector:
+    app: example
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+
+-----------------------------
+Accéser à NGINX sur navigateur :
+Port Forward :  kubectl port-forward service/nginx-service 8080:80 -n default
+
+Solution 2 — avec NodePort
+
+Mdifier le service :
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+  namespace: default
+spec:
+  type: NodePort
+  selector:
+    app: example
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 30080
+
+Dans le terminal :
+
+kubectl apply -f service.yaml
+
+Solution 3 :
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: example
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+
+-----------------------------
+Dans ConfigMap :
+
+Monter un volume et vérifier s'il est disponible dans le container :
+
+
+Tp à rendre :
+proposer une archi multi service ou déployable sur Kubernetes
+
+Cette archi doit etre cohérente (pas de pod qui tournent sans utilités)
+min : 5 pods (1 conteneur par pod) et plusieurs configs reseau,
+au moins deux volumes et deux configurations surchargées
+
+Bonus : faire le déploiement de cette plateforme via du gitOps avec terraform
+
+Etapes :
+- 1 : le 3 avril :  faire valider le projet
+Facultatif mais à vos risques et perils
+- 2 présentation et rendu le 28 avril après midi
+A. Mettre a dispo le code source
+B. préparer la présentation:
+diagramme d'architecture technique + explication + demo (10min)
+
+Groupe 1 à 2 personnes

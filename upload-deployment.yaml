@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: upload-deployment
+  namespace: recipes-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: upload
+  template:
+    metadata:
+      labels:
+        app: upload
+    spec:
+      containers:
+        - name: upload
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: upload-storage
+              mountPath: /usr/share/nginx/html
+            - name: app-demo-pages
+              mountPath: /usr/share/nginx/html/index.html
+              subPath: upload-index.html
+      volumes:
+        - name: upload-storage
+          persistentVolumeClaim:
+            claimName: upload-pvc
+        - name: app-demo-pages
+          configMap:
+            name: app-demo-pages
